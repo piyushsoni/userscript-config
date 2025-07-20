@@ -26,7 +26,9 @@
     // --- Sample JSON configuration ---
     const rbCommonsConfig = {
       headerText: "Better RBCommons Settings",
-
+      groups: [
+          { id: 'linkHandlers', name: 'Link Handlers', collapsedIf: { otherElementId: 'enableQuickFileOpenLinks', value: false } }
+      ],
       settings: [
         {
           id: 'enableShowingExtraLinks',
@@ -61,6 +63,7 @@
           type: 'dropdown',
           labelText: 'Default app for all extensions' ,
           defaultValue: 'VSCode',
+          tooltip: 'Default extension handler for all unspecified extensions',
           options: [
             { value: 'VSCode', text: 'VS Code' },
             { value: 'idea', text: 'IntelliJ IDEA' },
@@ -75,7 +78,7 @@
           type: 'textbox',
           labelText: 'Extensions opened by VSCode',
           placeholder: '.ts, .js, .html, .vue, ...',
-          defaultValue: '.ts, .js, .glsl, java, .cpp, .h',
+          defaultValue: '.ts, .js, .glsl, .java, .cpp, .h',
           enabledIf: { otherElementId: 'enableQuickFileOpenLinks', value: true },
           groupId: 'linkHandlers'
         },

@@ -48,6 +48,10 @@ class UserScriptConfig {
         return `${this.configId}.${settingId}`;
     }
 
+    hasValidGroups() {
+        return this.config.groups && Array.isArray(this.config.groups);
+    }
+
     /**
      * Reads values from localStorage and caches them into the
      * in memory config object
@@ -75,7 +79,7 @@ class UserScriptConfig {
         });
 
         // Read group states from localStorage
-        if (this.config.groups && Array.isArray(this.config.groups)) {
+        if (this.hasValidGroups()) {
             this.config.groups.forEach(group => {
                 try {
                     const storageKey = this.getStorageKey(`groupState.${group.id}`);
@@ -139,7 +143,7 @@ class UserScriptConfig {
         });
 
         // Reset group states to their default in config
-        if (this.config.groups && Array.isArray(this.config.groups)) {
+        if (this.hasValidGroups()) {
             this.config.groups.forEach(group => {
                 const defaultExpanded = (group.expanded === undefined || group.expanded === null) ? true : group.expanded;
                 this.groupStates.set(group.id, defaultExpanded);
@@ -466,13 +470,13 @@ class UserScriptConfig {
      * Initializes the group states based on config defaults.
      */
     setupGroupStates() {
-        if (this.config.groups && Array.isArray(this.config.groups)) {
-            this.config.groups.forEach(group => {
-                // Default to true (expanded) if 'expanded' property is not specified
-                const defaultExpanded = (group.expanded === undefined || group.expanded === null) ? true : group.expanded;
-                this.groupStates.set(group.id, defaultExpanded);
-            });
-        }
+        if (!this.hasValidGroups()) return;
+
+        this.config.groups.forEach(group => {
+            // Default to true (expanded) if 'expanded' property is not specified
+            const defaultExpanded = (group.expanded === undefined || group.expanded === null) ? true : group.expanded;
+            this.groupStates.set(group.id, defaultExpanded);
+        });
     }
 
     /**
@@ -481,6 +485,9 @@ class UserScriptConfig {
     createSettingRow(setting) {
         const row = document.createElement('tr');
         row.className = 'setting-row';
+        if (setting.tooltip) {
+            row.title = setting.tooltip;
+        }
 
         // Create label cell
         const labelCell = document.createElement('td');
@@ -691,7 +698,7 @@ class UserScriptConfig {
         });
 
         // See if a group needs to expand or collapse
-        if (!this.config.groups) return;
+        if (!this.hasValidGroups()) return;
         this.config.groups.forEach(group => {
             if (group.collapsedIf) {
                 // Format- `collapsedIf: { otherElementId: '<id>', value: <value> }`
@@ -825,12 +832,14 @@ class UserScriptConfig {
         });
 
         // See if a group needs to expand or collapse
-        this.config.groups.forEach(group => {
-            if (group.collapsedIf && group.collapsedIf.otherElementId === setting.id) {
-                // Format- `collapsedIf: { otherElementId: '<id>', value: <value> }`
-                this.setGroupState(group.id, this.getInputValue(setting) !== group.collapsedIf.value);
-            }
-        });
+        if (this.hasValidGroups()) {
+            this.config.groups.forEach(group => {
+                if (group.collapsedIf && group.collapsedIf.otherElementId === setting.id) {
+                    // Format- `collapsedIf: { otherElementId: '<id>', value: <value> }`
+                    this.setGroupState(group.id, this.getInputValue(setting) !== group.collapsedIf.value);
+                }
+            });
+        }
 
         // Execute onChange callback
         if (this.callbacks.onChange && typeof this.callbacks.onChange === 'function') {
