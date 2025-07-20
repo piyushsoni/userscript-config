@@ -46,74 +46,57 @@
           defaultValue: true
         },
         {
-          id: 'VSCodeNewtonPath',
+          id: 'newtonPath',
           type: 'textbox',
           labelText: 'Newton repository Path',
           placeholder: '/Users/<username>/repos/newton',
-          defaultValue: ''
-        }
-
-      ],
-      saveButtonText: "Save",
-      cancelButtonText: "Cancel"
-    };
-
-    const config = {
-      headerText: "My App Settings",
-      footerText: "Configure your preferences.",
-      settings: [
-        {
-          id: "username",
-          type: "textbox",
-          labelText: "Username",
-          defaultValue: "",
-          validationRegex: "^[a-zA-Z0-9_]{3,12}$",
-          errorMessage: "3-12 characters, letters/numbers/_ only"
+          defaultValue: '',
+          enabledIf: { otherElementId: 'enableQuickFileOpenLinks', value: true }
         },
         {
-          id: "password",
-          type: "password",
-          labelText: "Password",
-          defaultValue: "",
-          validationRegex: "^.{6,}$",
-          errorMessage: "At least 6 characters"
-        },
-        {
-          id: "useDarkMode",
-          type: "checkbox",
-          labelText: "Enable Dark Mode",
-          defaultValue: false
-        },
-        {
-          id: "preferredColor",
-          type: "dropdown",
-          labelText: "Theme Color",
-          defaultValue: "blue",
+          id: 'defaultHandlerApp',
+          type: 'dropdown',
+          labelText: 'Default app for all extensions' ,
+          defaultValue: 'VSCode',
           options: [
-            { value: "blue", text: "Blue" },
-            { value: "green", text: "Green" },
-            { value: "red", text: "Red" }
-          ]
+            { value: 'VSCode', text: 'VS Code' },
+            { value: 'idea', text: 'IntelliJ IDEA' },
+            { value: 'webstorm', text: 'Webstorm' },
+            { value: 'pycharm', text: 'PyCharm' }
+          ],
+          enabledIf: { otherElementId: 'enableQuickFileOpenLinks', value: true }
         },
         {
-          id: "notifyBy",
-          type: "radio",
-          labelText: "Notification Method",
-          defaultValue: "email",
-          groupName: "notification",
-          options: [
-            { value: "email", text: "Email" },
-            { value: "sms", text: "SMS" }
-          ]
+          id: 'vscodeExtensions',
+          type: 'textbox',
+          labelText: 'Extensions opened by VSCode',
+          placeholder: '.ts, .js, .html, .vue, ...',
+          defaultValue: '.ts, .js, .glsl, java, .cpp, .h',
+          enabledIf: { otherElementId: 'enableQuickFileOpenLinks', value: true }
         },
         {
-          id: "smsNumber",
-          type: "textbox",
-          labelText: "SMS Number",
-          defaultValue: "",
-          validationRegex: "^(\\+?[1-9][0-9]{7,14})?$",
-          errorMessage: "Enter a valid phone number",
-          enabledIf: { otherElementId: "notifyBy", value: "sms" }
+          id: 'ideaExtensions',
+          type: 'textbox',
+          labelText: 'Extensions opened by IntelliJ IDEA',
+          placeholder: '.java, ...',
+          defaultValue: '',
+          enabledIf: { otherElementId: 'enableQuickFileOpenLinks', value: true }
+        },
+        {
+          id: 'webstormExtensions',
+          type: 'textbox',
+          labelText: 'Extensions opened by Webstorm',
+          placeholder: '.ts, .js, ...',
+          defaultValue: '',
+          enabledIf: { otherElementId: 'enableQuickFileOpenLinks', value: true }
+        },
+        {
+          id: 'pycharmExtensions',
+          type: 'textbox',
+          labelText: 'Extensions opened by Pycharm',
+          placeholder: '.py, ...',
+          defaultValue: '',
+          enabledIf: { otherElementId: 'enableQuickFileOpenLinks', value: true }
         }
       ],
       saveButtonText: "Save",
@@ -121,7 +104,7 @@
     };
 
     // --- Main Test Logic ---
-    const configId = "testSettingsV1"; // Will appear as key prefix in localStorage.
+    const configId = "betterRBCommons"; // Will appear as key prefix in localStorage.
     const outputDiv = document.getElementById('output');
     const userSettings = getSettingsInstance(configId);
 
@@ -145,7 +128,7 @@
     }
 
     // Initialize the instance
-    userSettings.init(configId, config, {
+    userSettings.init(configId, rbCommonsConfig, {
       onOpen, onSave, onClose, onChange
     });
 
