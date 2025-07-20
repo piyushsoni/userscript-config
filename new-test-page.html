@@ -26,9 +26,7 @@
     // --- Sample JSON configuration ---
     const rbCommonsConfig = {
       headerText: "Better RBCommons Settings",
-      groups: [
-          { id: 'linkHandlers', name: 'Link Handlers', expanded: true },
-      ],
+
       settings: [
         {
           id: 'enableShowingExtraLinks',
@@ -54,6 +52,7 @@
           labelText: 'Newton repository Path',
           placeholder: '/Users/<username>/repos/newton',
           defaultValue: '',
+          validationRegex: '^\/.+\/.+',
           enabledIf: { otherElementId: 'enableQuickFileOpenLinks', value: true },
           groupId: 'linkHandlers'
         },

@@ -62,7 +62,11 @@ class UserScriptConfig {
             try {
                 const storageKey = this.getStorageKey(setting.id);
                 const storedValue = localStorage.getItem(storageKey);
-                const value = storedValue !== null ? storedValue : setting.defaultValue;
+                let value = !!storedValue ? storedValue : setting.defaultValue;
+                // Handle boolean values written in storage. Every other value is string.
+                if (value === "true" || value === "false") {
+                    value = value === "true";
+                }
                 this.values.set(setting.id, value);
             } catch (error) {
                 console.error(`Error reading from LocalStorage for ${setting.id}:`, error);
@@ -256,20 +260,24 @@ class UserScriptConfig {
 
         // Update group collapse/expand state in dialog
         this.groupStates.forEach((isExpanded, groupId) => {
-            const groupContent = this.currentDialog.querySelector(`.settings-group[data-group-id="${groupId}"] .settings-group-content`);
-            const groupToggleImg = this.currentDialog.querySelector(`.settings-group[data-group-id="${groupId}"] .settings-group-toggle img`);
-            if (groupContent && groupToggleImg) {
-                if (isExpanded) {
-                    groupContent.classList.add('expanded');
-                    groupToggleImg.src = this.expandedIcon; // Set to upwards arrows
-                } else {
-                    groupContent.classList.remove('expanded');
-                    groupToggleImg.src = this.collapsedIcon; // Set to downwards arrows
-                }
-            }
+            this.setGroupState(groupId, isExpanded);
         });
 
         return this;
+    }
+
+    setGroupState(groupId, isExpanded) {
+        const groupContent = this.currentDialog.querySelector(`.settings-group[data-group-id="${groupId}"] .settings-group-content`);
+        const groupToggleImg = this.currentDialog.querySelector(`.settings-group[data-group-id="${groupId}"] .settings-group-toggle img`);
+        if (groupContent && groupToggleImg) {
+            if (isExpanded) {
+                groupContent.classList.add('expanded');
+                groupToggleImg.src = this.expandedIcon; // Set to upwards arrows
+            } else {
+                groupContent.classList.remove('expanded');
+                groupToggleImg.src = this.collapsedIcon; // Set to downwards arrows
+            }
+        }
     }
 
     /**
@@ -492,7 +500,6 @@ class UserScriptConfig {
             inputCell.appendChild(inputElement);
         }
 
-
         // Add error message container for validation
         if (setting.validationRegex) {
             const errorDiv = document.createElement('div');
@@ -679,7 +686,17 @@ class UserScriptConfig {
 
         this.config.settings.forEach(setting => {
             if (setting.enabledIf) {
-                this.updateConditionalState(setting);
+                this.updateConditionalStateForSetting(setting);
+            }
+        });
+
+        // See if a group needs to expand or collapse
+        if (!this.config.groups) return;
+        this.config.groups.forEach(group => {
+            if (group.collapsedIf) {
+                // Format- `collapsedIf: { otherElementId: '<id>', value: <value> }`
+                const otherFieldValue = this.getFieldValue(group.collapsedIf.otherElementId);
+                this.setGroupState(group.id, otherFieldValue !== group.collapsedIf.value);
             }
         });
     }
@@ -687,7 +704,7 @@ class UserScriptConfig {
     /**
      * Updates the enabled/disabled state based on conditional logic
      */
-    updateConditionalState(setting) {
+    updateConditionalStateForSetting(setting) {
         if (!setting.enabledIf) return;
 
         const dependentSetting = this.config.settings.find(s => s.id === setting.enabledIf.otherElementId);
@@ -698,11 +715,12 @@ class UserScriptConfig {
 
         const inputElement = this.getInputElementById(setting.id);
         if (inputElement) {
+            inputElement.disabled = !shouldEnable;
             if (!shouldEnable) {
                 // If disabling, reset to default value
                 this.setInputValue(setting, setting.defaultValue);
             }
-            inputElement.disabled = !shouldEnable;
+            this.validateInput(setting);
         }
     }
 
@@ -753,14 +771,14 @@ class UserScriptConfig {
      */
     validateInput(setting) {
         if (!setting.validationRegex) return true;
-
+        const inputElement = document.getElementById(setting.id);
         const value = this.getInputValue(setting);
         const regex = new RegExp(setting.validationRegex);
-        const isValid = regex.test(value);
+
+        const isValid = regex.test(value) || inputElement.disabled /* if it's disabled, we don't need to test it */;
 
         this.validationState.set(setting.id, isValid);
 
-        const inputElement = document.getElementById(setting.id);
         const errorElement = document.getElementById(`${setting.id}-error`);
 
         if (inputElement) {
@@ -802,7 +820,15 @@ class UserScriptConfig {
         // Update conditional logic for all settings
         this.config.settings.forEach(s => {
             if (s.enabledIf && s.enabledIf.otherElementId === setting.id) {
-                this.updateConditionalState(s);
+                this.updateConditionalStateForSetting(s);
+            }
+        });
+
+        // See if a group needs to expand or collapse
+        this.config.groups.forEach(group => {
+            if (group.collapsedIf && group.collapsedIf.otherElementId === setting.id) {
+                // Format- `collapsedIf: { otherElementId: '<id>', value: <value> }`
+                this.setGroupState(group.id, this.getInputValue(setting) !== group.collapsedIf.value);
             }
         });
 
