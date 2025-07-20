@@ -28,7 +28,6 @@
       headerText: "Better RBCommons Settings",
       groups: [
           { id: 'linkHandlers', name: 'Link Handlers', expanded: true },
-          { id: 'others', name: 'Others', expanded: false }
       ],
       settings: [
         {
@@ -121,6 +120,7 @@
     function showValues() {
       const vals = userSettings.getAllFieldValues();
       outputDiv.textContent = "Current values: " + JSON.stringify(vals, null, 2);
+      userSettings.openSettingsDialog();
     }
 
     function onOpen() {

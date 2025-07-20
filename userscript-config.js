@@ -10,10 +10,12 @@ class UserScriptConfig {
         this.config = null;
         this.callbacks = {};
         this.validationState = new Map();
-        this.values = new Map(); // Cached settings values
-        this.groupStates = new Map(); // Stores collapsed/expanded state of groups
+        this.values = new Map();
+        this.groupStates = new Map();
         this.isInitialized = false;
-        this.configId = null; // Namespace for localStorage keys
+        this.configId = null;
+        this.collapsedIcon = 'downward-arrow.svg';
+        this.expandedIcon = 'upward-arrow.svg';
     }
 
     /**
@@ -255,18 +257,14 @@ class UserScriptConfig {
         // Update group collapse/expand state in dialog
         this.groupStates.forEach((isExpanded, groupId) => {
             const groupContent = this.currentDialog.querySelector(`.settings-group[data-group-id="${groupId}"] .settings-group-content`);
-            const groupToggle = this.currentDialog.querySelector(`.settings-group[data-group-id="${groupId}"] .settings-group-toggle`);
-            if (groupContent && groupToggle) {
+            const groupToggleImg = this.currentDialog.querySelector(`.settings-group[data-group-id="${groupId}"] .settings-group-toggle img`);
+            if (groupContent && groupToggleImg) {
                 if (isExpanded) {
                     groupContent.classList.add('expanded');
-                    groupToggle.classList.remove('collapsed-icon');
-                    groupToggle.classList.add('expanded-icon');
-                    groupToggle.textContent = '▼'; // Down arrow
+                    groupToggleImg.src = this.expandedIcon; // Set to upwards arrows
                 } else {
                     groupContent.classList.remove('expanded');
-                    groupToggle.classList.remove('expanded-icon');
-                    groupToggle.classList.add('collapsed-icon');
-                    groupToggle.textContent = '▶'; // Right arrow
+                    groupToggleImg.src = this.collapsedIcon; // Set to downwards arrows
                 }
             }
         });
@@ -405,11 +403,16 @@ class UserScriptConfig {
         title.textContent = groupConfig.name;
         headerDiv.appendChild(title);
 
-        const toggleIcon = document.createElement('span');
-        toggleIcon.className = 'settings-group-toggle';
+        const toggleIconSpan = document.createElement('span');
+        toggleIconSpan.className = 'settings-group-toggle';
+
+        const toggleIconImg = document.createElement('img');
+        toggleIconImg.alt = 'Toggle Group';
         // Initial icon will be set by updateSettingsToDialog based on groupStates
-        toggleIcon.textContent = '▶'; // Default to right arrow (collapsed)
-        headerDiv.appendChild(toggleIcon);
+        toggleIconImg.src = this.collapsedIcon; // Default to collapsed state icon (downwards arrows)
+        toggleIconSpan.appendChild(toggleIconImg);
+
+        headerDiv.appendChild(toggleIconSpan);
 
         groupDiv.appendChild(headerDiv);
 
