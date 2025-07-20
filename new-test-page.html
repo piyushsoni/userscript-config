@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>UserScriptConfig Test Page</title>
+  <link rel="stylesheet" href="userscript-style.css">
+  <style>
+    /* For demo info output */
+    #output {
+      margin: 24px 0;
+      padding: 12px;
+      font-family: monospace;
+      background: #f8f8f8;
+      border: 1px solid #eee;
+    }
+  </style>
+</head>
+<body>
+  <h1>UserScriptConfig Library Test</h1>
+  <button id="openSettingsBtn">Open Settings Dialog</button>
+  <button id="resetDefaultsBtn">Reset to Defaults</button>
+  <div id="output">Current values: (will show after Save or on open)</div>
+
+  <script src="userscript-config.js"></script>
+  <script>
+    // --- Sample JSON configuration ---
+    const rbCommonsConfig = {
+      headerText: "Better RBCommons Settings",
+      settings: [
+        {
+          id: 'enableShowingExtraLinks',
+          type: 'checkbox',
+          labelText: 'Show extra navbar links',
+          defaultValue: true
+        },
+        {
+          id: 'enableShowingExactTimes',
+          type: 'checkbox',
+          labelText: 'Show exact times instead of relative',
+          defaultValue: true
+        },
+        {
+          id: 'enableQuickFileOpenLinks',
+          type: 'checkbox',
+          labelText: 'Show quick file open links',
+          defaultValue: true
+        },
+        {
+          id: 'VSCodeNewtonPath',
+          type: 'textbox',
+          labelText: 'Newton repository Path',
+          placeholder: '/Users/<username>/repos/newton',
+          defaultValue: ''
+        }
+
+      ],
+      saveButtonText: "Save",
+      cancelButtonText: "Cancel"
+    };
+
+    const config = {
+      headerText: "My App Settings",
+      footerText: "Configure your preferences.",
+      settings: [
+        {
+          id: "username",
+          type: "textbox",
+          labelText: "Username",
+          defaultValue: "",
+          validationRegex: "^[a-zA-Z0-9_]{3,12}$",
+          errorMessage: "3-12 characters, letters/numbers/_ only"
+        },
+        {
+          id: "password",
+          type: "password",
+          labelText: "Password",
+          defaultValue: "",
+          validationRegex: "^.{6,}$",
+          errorMessage: "At least 6 characters"
+        },
+        {
+          id: "useDarkMode",
+          type: "checkbox",
+          labelText: "Enable Dark Mode",
+          defaultValue: false
+        },
+        {
+          id: "preferredColor",
+          type: "dropdown",
+          labelText: "Theme Color",
+          defaultValue: "blue",
+          options: [
+            { value: "blue", text: "Blue" },
+            { value: "green", text: "Green" },
+            { value: "red", text: "Red" }
+          ]
+        },
+        {
+          id: "notifyBy",
+          type: "radio",
+          labelText: "Notification Method",
+          defaultValue: "email",
+          groupName: "notification",
+          options: [
+            { value: "email", text: "Email" },
+            { value: "sms", text: "SMS" }
+          ]
+        },
+        {
+          id: "smsNumber",
+          type: "textbox",
+          labelText: "SMS Number",
+          defaultValue: "",
+          validationRegex: "^(\\+?[1-9][0-9]{7,14})?$",
+          errorMessage: "Enter a valid phone number",
+          enabledIf: { otherElementId: "notifyBy", value: "sms" }
+        }
+      ],
+      saveButtonText: "Save",
+      cancelButtonText: "Cancel"
+    };
+
+    // --- Main Test Logic ---
+    const configId = "testSettingsV1"; // Will appear as key prefix in localStorage.
+    const outputDiv = document.getElementById('output');
+    const userSettings = getSettingsInstance(configId);
+
+    function showValues() {
+      const vals = userSettings.getAllFieldValues();
+      outputDiv.textContent = "Current values: " + JSON.stringify(vals, null, 2);
+    }
+
+    function onOpen() {
+      outputDiv.textContent = "[Dialog opened]";
+    }
+    function onSave() {
+      showValues();
+      outputDiv.textContent += "\n[Settings saved!]";
+    }
+    function onClose() {
+      outputDiv.textContent += "\n[Dialog closed]";
+    }
+    function onChange(id, value) {
+      outputDiv.textContent = `[Changed] ${id} = ${value}`;
+    }
+
+    // Initialize the instance
+    userSettings.init(configId, config, {
+      onOpen, onSave, onClose, onChange
+    });
+
+    // Demo button handlers
+    document.getElementById('openSettingsBtn').onclick = () => {
+      userSettings.openSettingsDialog();
+    };
+    document.getElementById('resetDefaultsBtn').onclick = () => {
+      userSettings.resetToDefaults();
+      showValues();
+      alert("Defaults restored. Open settings to see.");
+    };
+
+    // Show values at load
+    showValues();
+  </script>
+</body>
+</html>

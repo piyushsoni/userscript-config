@@ -142,7 +142,7 @@
 }
 
 /* Select dropdown styling */
-.setting-input[type="select-one"] {
+select.setting-input {
     background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3E%3Cpath fill='%23666' d='M2 0L0 2h4zm0 5L0 3h4z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 10px center;
@@ -224,51 +224,6 @@
     transform: translateY(-1px);
 }
 
-/* Responsive design for smaller screens */
-@media (max-width: 768px) {
-    .settings-dialog {
-        width: 95%;
-        max-width: none;
-        padding: 20px;
-        margin: 10px;
-    }
-    
-    .setting-label {
-        width: 100%;
-        text-align: left;
-        padding: 10px 0 5px 0;
-    }
-    
-    .setting-input-cell {
-        width: 100%;
-        padding: 5px 0 15px 0;
-    }
-    
-    .setting-row {
-        display: block;
-    }
-    
-    .setting-row td {
-        display: block;
-        width: 100% !important;
-    }
-    
-    .dialog-footer {
-        flex-direction: column;
-        gap: 10px;
-    }
-    
-    .dialog-footer span {
-        margin-right: 0;
-        text-align: center;
-    }
-    
-    .save-button,
-    .cancel-button {
-        width: 100%;
-    }
-}
-
 /* Smooth scrolling for dialog content */
 .settings-dialog {
     scroll-behavior: smooth;
@@ -297,34 +252,4 @@
 .settings-dialog *:focus {
     outline: 2px solid #007bff;
     outline-offset: 2px;
-}
-
-/* High contrast mode support */
-@media (prefers-contrast: high) {
-    .settings-dialog {
-        border: 2px solid #000000;
-    }
-    
-    .setting-input {
-        border: 2px solid #000000;
-    }
-    
-    .save-button,
-    .cancel-button {
-        border: 2px solid #000000;
-    }
-}
-
-/* Reduced motion support */
-@media (prefers-reduced-motion: reduce) {
-    .setting-input,
-    .save-button,
-    .cancel-button {
-        transition: none;
-    }
-    
-    .save-button:hover,
-    .cancel-button:hover {
-        transform: none;
-    }
 }

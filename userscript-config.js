@@ -4,49 +4,218 @@
  * with LocalStorage persistence and validation support.
  */
 
-class SettingsDialogGenerator {
+class UserScriptConfig {
     constructor() {
         this.currentDialog = null;
-        this.currentConfig = null;
+        this.config = null;
+        this.callbacks = {};
         this.validationState = new Map();
+        this.values = new Map(); // Cached settings values
+        this.isInitialized = false;
+        this.configId = null; // Namespace for localStorage keys
     }
 
     /**
-     * Creates and displays a settings dialog
+     * Initializes the settings manager with configuration and callbacks
+     * @param {string} configId - Unique identifier for this settings instance (used for localStorage namespacing)
      * @param {Object} config - JSON configuration object
      * @param {Object} callbacks - Optional callback functions {onOpen, onClose, onSave, onChange}
      */
-    createSettingsDialog(config, callbacks = {}) {
-        // Store config and callbacks for later use
-        this.currentConfig = config;
-        this.currentCallbacks = callbacks;
+    init(configId, config, callbacks = {}) {
+        this.configId = configId;
+        this.config = config;
+        this.callbacks = callbacks;
+        this.isInitialized = true;
         
+        this.setupValidationState();
+
+        // Read from localStorage and store into the object.
+        this.readFromStore();
+
+        return this;
+    }
+
+    /**
+     * Generates the namespaced localStorage key
+     * @param {string} settingId - The setting ID
+     * @returns {string} Namespaced key
+     */
+    getStorageKey(settingId) {
+        return `${this.configId}.${settingId}`;
+    }
+
+    /**
+     * Reads values from localStorage and caches them into the
+     * in memory config object
+     */
+    readFromStore() {
+        if (!this.isInitialized || !this.config.settings) {
+            console.warn('Settings not initialized. Call init() first.');
+            return this;
+        }
+
+        this.config.settings.forEach(setting => {
+            try {
+                const storageKey = this.getStorageKey(setting.id);
+                const storedValue = localStorage.getItem(storageKey);
+                const value = storedValue !== null ? storedValue : setting.defaultValue;
+                this.values.set(setting.id, value);
+            } catch (error) {
+                console.error(`Error reading from LocalStorage for ${setting.id}:`, error);
+                this.values.set(setting.id, setting.defaultValue);
+            }
+        });
+
+        return this;
+    }
+
+    /**
+     * Writes memory object values to localStorage
+     */
+    writeToStorage() {
+        if (!this.isInitialized) {
+            console.warn('Settings not initialized. Call init() first.');
+            return this;
+        }
+
+        this.values.forEach((value, id) => {
+            try {
+                const storageKey = this.getStorageKey(id);
+                localStorage.setItem(storageKey, value.toString());
+            } catch (error) {
+                console.error(`Error writing to LocalStorage for ${id}:`, error);
+            }
+        });
+
+        return this;
+    }
+
+    /**
+     * Resets all values in the Config object to their defaults
+     */
+    resetToDefaults() {
+        if (!this.isInitialized || !this.config.settings) {
+            console.warn('Settings not initialized. Call init() first.');
+            return this;
+        }
+
+        this.config.settings.forEach(setting => {
+            this.values.set(setting.id, setting.defaultValue);
+        });
+
+        return this;
+    }
+
+    /**
+     * Updates a specific setting value in the cache
+     * @param {string} id - Setting ID
+     * @param {any} value - New value
+     */
+    setFieldValue(id, value) {
+        if (!this.isInitialized) {
+            console.warn('Settings not initialized. Call init() first.');
+            return this;
+        }
+
+        this.values.set(id, value);
+        return this;
+    }
+
+    /**
+     * Gets a field value by ID
+     * @param {string} id - Setting ID
+     * @returns {any} The field value
+     */
+    getFieldValue(id) {
+        return this.values.get(id);
+    }
+
+    /**
+     * Gets all field values as an object
+     * @returns {Object} All field values
+     */
+    getAllFieldValues() {
+        const values = {};
+        this.values.forEach((value, id) => {
+            values[id] = value;
+        });
+        return values;
+    }
+
+    /**
+     * Creates and displays the settings dialog using field values
+     */
+    openSettingsDialog() {
+        if (!this.isInitialized) {
+            console.warn('Settings not initialized. Call init() first.');
+            return null;
+        }
+
         // Remove any existing dialog
         if (this.currentDialog) {
             this.currentDialog.remove();
         }
 
         // Create dialog structure
-        this.currentDialog = this.createDialogStructure(config);
+        this.currentDialog = this.createDialogStructure(this.config);
 
         // Add to DOM
         document.body.appendChild(this.currentDialog);
         
-        // Populate with current values from LocalStorage
-        this.populateValuesFromStorage(config);
+        // Populate with field values
+        this.updateSettingsToDialog();
         
         // Set up conditional logic
-        this.setupConditionalLogic(config);
+        this.setupConditionalLogic();
         
         // Set up keyboard event handlers
         this.setupKeyboardHandlers();
         
+        // Set up validation
+        this.setupValidation();
+
         // Execute onOpen callback
-        if (callbacks.onOpen && typeof callbacks.onOpen === 'function') {
-            callbacks.onOpen();
+        if (this.callbacks.onOpen && typeof this.callbacks.onOpen === 'function') {
+            this.callbacks.onOpen();
         }
         
         return this.currentDialog;
+    }
+
+    /**
+     * Updates field values from the dialog inputs (doesn't write to storage)
+     */
+    updateSettingsFromDialog() {
+        if (!this.currentDialog || !this.config.settings) {
+            console.warn('No dialog open or settings not initialized.');
+            return this;
+        }
+
+        this.config.settings.forEach(setting => {
+            const value = this.getInputValue(setting);
+            this.values.set(setting.id, value);
+        });
+
+        return this;
+    }
+
+    /**
+     * Updates dialog inputs from field values
+     */
+    updateSettingsToDialog() {
+        if (!this.currentDialog || !this.config.settings) {
+            console.warn('No dialog open or settings not initialized.');
+            return this;
+        }
+
+        this.config.settings.forEach(setting => {
+            const fieldValue = this.values.get(setting.id);
+            if (fieldValue !== undefined) {
+                this.setInputValue(setting, fieldValue);
+            }
+        });
+
+        return this;
     }
 
     /**
@@ -173,9 +342,12 @@ class SettingsDialogGenerator {
                 textInput.type = 'text';
                 textInput.id = setting.id;
                 textInput.className = inputClass;
+                if (setting.placeholder) {
+                    textInput.placeholder = setting.placeholder;
+                }
                 textInput.addEventListener('input', () => this.handleInputChange(setting));
                 return textInput;
-                
+            break;
             case 'password':
                 const passwordInput = document.createElement('input');
                 passwordInput.type = 'password';
@@ -183,7 +355,7 @@ class SettingsDialogGenerator {
                 passwordInput.className = inputClass;
                 passwordInput.addEventListener('input', () => this.handleInputChange(setting));
                 return passwordInput;
-                
+            break;
             case 'checkbox':
                 const checkboxInput = document.createElement('input');
                 checkboxInput.type = 'checkbox';
@@ -191,7 +363,7 @@ class SettingsDialogGenerator {
                 checkboxInput.className = inputClass;
                 checkboxInput.addEventListener('change', () => this.handleInputChange(setting));
                 return checkboxInput;
-                
+            break;
             case 'radio':
                 const radioContainer = document.createElement('div');
                 radioContainer.className = 'radio-group';
@@ -220,7 +392,7 @@ class SettingsDialogGenerator {
                 }
                 
                 return radioContainer;
-                
+            break;
             case 'dropdown':
                 const selectInput = document.createElement('select');
                 selectInput.id = setting.id;
@@ -237,35 +409,11 @@ class SettingsDialogGenerator {
                 }
                 
                 return selectInput;
-                
+            break;
             default:
-                // Default to textbox
-                const defaultInput = document.createElement('input');
-                defaultInput.type = 'text';
-                defaultInput.id = setting.id;
-                defaultInput.className = inputClass;
-                defaultInput.addEventListener('input', () => this.handleInputChange(setting));
-                return defaultInput;
+                console.warn('Unrecognized type: ' + setting.type + ', cannot create input element');
+                return null;
         }
-    }
-
-    /**
-     * Populates input values from LocalStorage
-     */
-    populateValuesFromStorage(config) {
-        if (!config.settings) return;
-        
-        config.settings.forEach(setting => {
-            try {
-                const storedValue = localStorage.getItem(setting.id);
-                const value = storedValue !== null ? storedValue : setting.defaultValue;
-                
-                this.setInputValue(setting, value);
-            } catch (error) {
-                console.error(`Error reading from LocalStorage for ${setting.id}:`, error);
-                this.setInputValue(setting, setting.defaultValue);
-            }
-        });
     }
 
     /**
@@ -278,7 +426,9 @@ class SettingsDialogGenerator {
             case 'textbox':
             case 'password':
                 const textInput = document.getElementById(setting.id);
-                if (textInput) textInput.value = value || '';
+                if (textInput) {
+                    textInput.value = value;
+                }
                 break;
                 
             case 'checkbox':
@@ -349,10 +499,10 @@ class SettingsDialogGenerator {
     /**
      * Sets up conditional logic for enabledIf
      */
-    setupConditionalLogic(config) {
-        if (!config.settings) return;
+    setupConditionalLogic() {
+        if (!this.config.settings) return;
         
-        config.settings.forEach(setting => {
+        this.config.settings.forEach(setting => {
             if (setting.enabledIf) {
                 this.updateConditionalState(setting);
             }
@@ -365,7 +515,7 @@ class SettingsDialogGenerator {
     updateConditionalState(setting) {
         if (!setting.enabledIf) return;
         
-        const dependentSetting = this.currentConfig.settings.find(s => s.id === setting.enabledIf.otherElementId);
+        const dependentSetting = this.config.settings.find(s => s.id === setting.enabledIf.otherElementId);
         if (!dependentSetting) return;
         
         const dependentValue = this.getInputValue(dependentSetting);
@@ -373,6 +523,9 @@ class SettingsDialogGenerator {
         
         const inputElement = this.getInputElementById(setting.id);
         if (inputElement) {
+            if (!shouldEnable) {
+                this.setInputValue(setting, setting.defaultValue);
+            }
             inputElement.disabled = !shouldEnable;
         }
     }
@@ -390,17 +543,25 @@ class SettingsDialogGenerator {
     }
 
     /**
+     * Sets up validation state for all settings
+     */
+    setupValidationState() {
+        if (!this.config.settings) return;
+
+        this.config.settings.forEach(setting => {
+            this.validationState.set(setting.id, true); // Start as valid
+        });
+    }
+
+    /**
      * Sets up validation for input elements
      */
-    setupValidation(config) {
-        if (!config.settings) return;
+    setupValidation() {
+        if (!this.config.settings) return;
         
-        config.settings.forEach(setting => {
+        this.config.settings.forEach(setting => {
             if (setting.validationRegex && (setting.type === 'textbox' || setting.type === 'password')) {
-                this.validationState.set(setting.id, true); // Start as valid
                 this.validateInput(setting);
-            } else {
-                this.validationState.set(setting.id, true); // No validation needed
             }
         });
         
@@ -442,7 +603,7 @@ class SettingsDialogGenerator {
      * Updates the save button enabled/disabled state
      */
     updateSaveButtonState() {
-        const saveButton = this.currentDialog.querySelector('.save-button');
+        const saveButton = this.currentDialog?.querySelector('.save-button');
         if (!saveButton) return;
         
         const allValid = Array.from(this.validationState.values()).every(valid => valid);
@@ -459,15 +620,15 @@ class SettingsDialogGenerator {
         }
         
         // Update conditional logic for all settings
-        this.currentConfig.settings.forEach(s => {
+        this.config.settings.forEach(s => {
             if (s.enabledIf && s.enabledIf.otherElementId === setting.id) {
                 this.updateConditionalState(s);
             }
         });
         
         // Execute onChange callback
-        if (this.currentCallbacks.onChange && typeof this.currentCallbacks.onChange === 'function') {
-            this.currentCallbacks.onChange(setting.id, this.getInputValue(setting));
+        if (this.callbacks.onChange && typeof this.callbacks.onChange === 'function') {
+            this.callbacks.onChange(setting.id, this.getInputValue(setting));
         }
     }
 
@@ -475,21 +636,15 @@ class SettingsDialogGenerator {
      * Handles save button click
      */
     handleSave() {
-        if (!this.currentConfig.settings) return;
-        
-        // Save all values to LocalStorage
-        this.currentConfig.settings.forEach(setting => {
-            try {
-                const value = this.getInputValue(setting);
-                localStorage.setItem(setting.id, value.toString());
-            } catch (error) {
-                console.error(`Error saving to LocalStorage for ${setting.id}:`, error);
-            }
-        });
+        // First update the in-memory config
+        // object from the dialog, and then write
+        // to the localStorage.
+        this.updateSettingsFromDialog();
+        this.writeToStorage();
         
         // Execute onSave callback
-        if (this.currentCallbacks.onSave && typeof this.currentCallbacks.onSave === 'function') {
-            this.currentCallbacks.onSave();
+        if (this.callbacks.onSave && typeof this.callbacks.onSave === 'function') {
+            this.callbacks.onSave();
         }
         
         this.closeDialog();
@@ -518,32 +673,37 @@ class SettingsDialogGenerator {
         }
         
         // Execute onClose callback
-        if (this.currentCallbacks && this.currentCallbacks.onClose && typeof this.currentCallbacks.onClose === 'function') {
-            this.currentCallbacks.onClose();
+        if (this.callbacks.onClose && typeof this.callbacks.onClose === 'function') {
+            this.callbacks.onClose();
         }
-        
-        this.currentConfig = null;
-        this.currentCallbacks = null;
-        this.validationState.clear();
+    }
+
+    /**
+     * Checks if dialog is currently open
+     */
+    isDialogOpen() {
+        return this.currentDialog !== null;
+    }
+
+    /**
+     * Checks if the settings manager is initialized
+     */
+    isReady() {
+        return this.isInitialized;
     }
 }
 
-// Create global instance
-const settingsDialogGenerator = new SettingsDialogGenerator();
+// Create multiple instances for different settings dialogs
+const settingsDialogInstances = new Map();
 
-// Export the main function
-function createSettingsDialog(config, callbacks = {}) {
-    return settingsDialogGenerator.createSettingsDialog(config, callbacks);
-}
-
-// For module environments
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { createSettingsDialog, SettingsDialogGenerator };
-}
-
-// For AMD environments
-if (typeof define === 'function' && define.amd) {
-    define([], function() {
-        return { createSettingsDialog, SettingsDialogGenerator };
-    });
+/**
+ * Gets or creates a settings dialog instance for a specific configId
+ * @param {string} configId - Unique identifier for the settings instance
+ * @returns {UserScriptConfig} The settings dialog instance
+ */
+function getSettingsInstance(configId) {
+    if (!settingsDialogInstances.has(configId)) {
+        settingsDialogInstances.set(configId, new UserScriptConfig());
+    }
+    return settingsDialogInstances.get(configId);
 }

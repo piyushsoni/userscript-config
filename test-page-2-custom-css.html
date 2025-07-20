@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>UserScriptConfig: Custom CSS Test</title>
+  <link rel="stylesheet" href="userscript-style.css">
+  <style>
+    /* Custom dialog container */
+    .custom-dialog-frame {
+      background: linear-gradient(135deg, #e0e0e0 0%, #b3c6ff 100%) !important;
+      border: 3px solid #5b7acc !important;
+      box-shadow: 0 0 12px #8593be;
+      color: #141828 !important;
+    }
+
+    /* Custom header */
+    .custom-header {
+      background: #5b7acc;
+      color: #fff !important;
+      border-radius: 7px 7px 0 0;
+      font-size: 28px;
+      letter-spacing: 1px;
+      padding: 18px 8px;
+      text-shadow: 1px 1px 2px #34405e;
+    }
+
+    /* Custom footer */
+    .custom-footer {
+      background: #eee;
+      color: #444;
+      border-radius: 0 0 7px 7px;
+      font-style: italic;
+    }
+
+    /* Custom Save Button */
+    .custom-save-btn {
+      background: #348f50 !important;
+      color: #fff !important;
+      border: 2px solid #256029 !important;
+      font-weight: bold;
+    }
+
+    .custom-save-btn:hover:not(:disabled) {
+      background: #256029 !important;
+    }
+
+    /* Custom Cancel Button */
+    .custom-cancel-btn {
+      background: #ff5252 !important;
+      color: #fff !important;
+      border: 2px solid #ba2222 !important;
+      font-weight: bold;
+    }
+    .custom-cancel-btn:hover {
+      background: #ba2222 !important;
+    }
+
+    /* Custom label and input */
+    .custom-label {
+      color: #903596;
+      font-size: 1.06em;
+    }
+
+    .custom-input {
+      border: 2px solid #903596 !important;
+      background: #f9f3fc !important;
+      color: #25303f !important;
+    }
+    /* For demo output */
+    #output {
+      margin: 24px 0;
+      padding: 12px;
+      font-family: monospace;
+      background: #f8f8f8;
+      border: 1px solid #eee;
+    }
+  </style>
+</head>
+<body>
+  <h1>UserScriptConfig Custom CSS Test</h1>
+  <button id="openSettingsBtn">Open Settings Dialog</button>
+  <button id="resetDefaultsBtn">Reset to Defaults</button>
+  <div id="output">Current values: (will show after Save or on open)</div>
+
+  <script src="userscript-config.js"></script>
+  <script>
+    // --- Custom Class Demo Config ---
+    const config = {
+      dialogCSSClass: "custom-dialog-frame",
+      headerCSSClass: "custom-header",
+      footerCSSClass: "custom-footer",
+      saveButtonCSSClass: "custom-save-btn",
+      cancelButtonCSSClass: "custom-cancel-btn",
+      headerText: "Custom CSS Dialog",
+      footerText: "You can style every part of this dialog!",
+      settings: [
+        {
+          id: "customText",
+          type: "textbox",
+          labelText: "Text Field",
+          labelCSSClass: "custom-label",
+          inputCSSClass: "custom-input"
+        },
+        {
+          id: "customPassword",
+          type: "password",
+          labelText: "Password Field",
+          labelCSSClass: "custom-label",
+          inputCSSClass: "custom-input"
+        },
+        {
+          id: "customCheckbox",
+          type: "checkbox",
+          labelText: "Checkbox",
+          labelCSSClass: "custom-label",
+          inputCSSClass: "custom-input"
+        },
+        {
+          id: "customDropdown",
+          type: "dropdown",
+          labelText: "Dropdown",
+          labelCSSClass: "custom-label",
+          inputCSSClass: "custom-input",
+          options: [
+            { value: "one", text: "One" },
+            { value: "two", text: "Two" }
+          ]
+        }
+      ],
+      saveButtonText: "Save",
+      cancelButtonText: "Cancel"
+    };
+
+    // --- Standard Demo Logic ---
+    const configId = "customSettingsDemo";
+    const outputDiv = document.getElementById('output');
+    const userSettings = getSettingsInstance(configId);
+
+    function showValues() {
+      const vals = userSettings.getAllFieldValues();
+      outputDiv.textContent = "Current values: " + JSON.stringify(vals, null, 2);
+    }
+
+    function onOpen() {
+      outputDiv.textContent = "[Dialog opened, custom CSS active]";
+    }
+    function onSave() {
+      showValues();
+      outputDiv.textContent += "\n[Settings saved!]";
+    }
+    function onClose() {
+      outputDiv.textContent += "\n[Dialog closed]";
+    }
+    function onChange(id, value) {
+      outputDiv.textContent = `[Changed] ${id} = ${value}`;
+    }
+
+    userSettings.init(configId, config, {
+      onOpen, onSave, onClose, onChange
+    });
+
+    document.getElementById('openSettingsBtn').onclick = () => {
+      userSettings.openSettingsDialog();
+    };
+    document.getElementById('resetDefaultsBtn').onclick = () => {
+      userSettings.resetToDefaults();
+      showValues();
+      alert("Defaults restored. Open settings to see.");
+    };
+
+    showValues();
+  </script>
+</body>
+</html>

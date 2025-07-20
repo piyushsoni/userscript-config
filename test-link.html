@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>URL Saver</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    #links { margin-top: 20px; }
+    a { display: block; margin: 5px 0; }
+  </style>
+</head>
+<body>
+  <h2>Enter a URL</h2>
+  <input type="text" id="urlInput" placeholder="https://example.com">
+  <button id="submitBtn">Submit</button>
+
+  <div id="links"></div>
+
+  <script>
+    const input = document.getElementById('urlInput');
+    input.style.width = '900px';
+    const button = document.getElementById('submitBtn');
+    const linksDiv = document.getElementById('links');
+
+    // Load saved URLs from localStorage
+    let savedURLs = JSON.parse(localStorage.getItem('savedURLs')) || [];
+
+    // Function to render links on the page
+    function renderLinks() {
+      linksDiv.innerHTML = '';
+      savedURLs.forEach(url => {
+        const link = document.createElement('a');
+        link.href = url;
+        link.textContent = url;
+        link.target = '_blank';
+        linksDiv.appendChild(link);
+      });
+    }
+
+    // Initialize page with saved URLs
+    renderLinks();
+
+    // Button click event
+    button.addEventListener('click', () => {
+      const url = input.value.trim();
+      if (url) {
+        savedURLs.push(url);
+        localStorage.setItem('savedURLs', JSON.stringify(savedURLs));
+        renderLinks();
+      }
+    });
+  </script>
+</body>
+</html>
