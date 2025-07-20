@@ -324,8 +324,3 @@ select.setting-input {
 .settings-group-content .setting-row:last-child {
     border-bottom: none; /* No border for the last row in a group */
 }
-
-/* Remove top border for the first group to avoid double border with header */
-.settings-group:first-of-type {
-    border-top: none;
-}

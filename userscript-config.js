@@ -386,13 +386,6 @@ class UserScriptConfig {
 
         overlay.appendChild(dialog);
 
-        // Close dialog when clicking overlay (not the dialog itself)
-        overlay.addEventListener('click', (e) => {
-            if (e.target === overlay) {
-                this.handleCancel();
-            }
-        });
-
         return overlay;
     }
 

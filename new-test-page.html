@@ -43,6 +43,21 @@
           defaultValue: true
         },
         {
+          id: 'enableFileGithubLink',
+          type: 'checkbox',
+          labelText: 'Show Github link for file',
+          defaultValue: true
+        },
+        {
+          id: 'baseGithubPath',
+          type: 'textbox',
+          labelText: 'Github file base path',
+          placeholder: 'https://github.com/<path>/',
+          defaultValue: 'https://github.com/onshape/newton/blob/master/',
+          validationRegex: '^https:\/\/github\.com\/.+\/$',
+          enabledIf: { otherElementId: 'enableFileGithubLink', value: true },
+        },
+        {
           id: 'enableQuickFileOpenLinks',
           type: 'checkbox',
           labelText: 'Show quick file open links',
@@ -56,7 +71,6 @@
           defaultValue: '',
           validationRegex: '^\/.+\/.+',
           enabledIf: { otherElementId: 'enableQuickFileOpenLinks', value: true },
-          groupId: 'linkHandlers'
         },
         {
           id: 'defaultHandlerApp',
