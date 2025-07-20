@@ -5,15 +5,15 @@
  */
 
 class UserScriptConfig {
-    constructor() {
+    constructor(config, callbacks = {}) {
         this.currentDialog = null;
-        this.config = null;
-        this.callbacks = {};
+        this.config = config;
+        this.callbacks = callbacks;
         this.validationState = new Map();
         this.values = new Map();
         this.groupStates = new Map();
         this.isInitialized = false;
-        this.configId = null;
+        this.configId = config.configId;
         this.collapsedIcon = 'downward-arrow.svg';
         this.expandedIcon = 'upward-arrow.svg';
     }
@@ -22,21 +22,18 @@ class UserScriptConfig {
      * Initializes the settings manager with configuration and callbacks
      * @param {string} configId - Unique identifier for this settings instance (used for localStorage namespacing)
      * @param {Object} config - JSON configuration object
-     * @param {Object} callbacks - Optional callback functions {onOpen, onClose, onSave, onChange}
+     * @param {Object} callbacks - Optional callback functions {onDialogOpened, onDialogClosed, onSettingsSaved, onSettingChanged}
      */
-    init(configId, config, callbacks = {}) {
-        this.configId = configId;
-        this.config = config;
-        this.callbacks = callbacks;
+    init() {
         this.isInitialized = true;
-
         this.setupValidationState();
         this.setupGroupStates(); // Initialize group states
 
         // Read from localStorage and store into the object.
         this.readFromStore();
-
-        return this;
+        if (this.callbacks.onSettingsLoaded && typeof this.callbacks.onSettingsLoaded === 'function') {
+            this.callbacks.onSettingsLoaded();
+        }
     }
 
     /**
@@ -221,9 +218,9 @@ class UserScriptConfig {
         // Set up validation
         this.setupValidation();
 
-        // Execute onOpen callback
-        if (this.callbacks.onOpen && typeof this.callbacks.onOpen === 'function') {
-            this.callbacks.onOpen();
+        // Execute onDialogOpened callback
+        if (this.callbacks.onDialogOpened && typeof this.callbacks.onDialogOpened === 'function') {
+            this.callbacks.onDialogOpened();
         }
 
         return this.currentDialog;
@@ -834,9 +831,9 @@ class UserScriptConfig {
             });
         }
 
-        // Execute onChange callback
-        if (this.callbacks.onChange && typeof this.callbacks.onChange === 'function') {
-            this.callbacks.onChange(setting.id, this.getInputValue(setting));
+        // Execute onSettingChanged callback
+        if (this.callbacks.onSettingChanged && typeof this.callbacks.onSettingChanged === 'function') {
+            this.callbacks.onSettingChanged(setting.id, this.getInputValue(setting));
         }
     }
 
@@ -850,9 +847,9 @@ class UserScriptConfig {
         this.updateSettingsFromDialog();
         this.writeToStorage();
 
-        // Execute onSave callback
-        if (this.callbacks.onSave && typeof this.callbacks.onSave === 'function') {
-            this.callbacks.onSave();
+        // Execute onSettingsSaved callback
+        if (this.callbacks.onSettingsSaved && typeof this.callbacks.onSettingsSaved === 'function') {
+            this.callbacks.onSettingsSaved();
         }
 
         this.closeDialog();
@@ -880,9 +877,9 @@ class UserScriptConfig {
             this.currentDialog = null;
         }
 
-        // Execute onClose callback
-        if (this.callbacks.onClose && typeof this.callbacks.onClose === 'function') {
-            this.callbacks.onClose();
+        // Execute onDialogClosed callback
+        if (this.callbacks.onDialogClosed && typeof this.callbacks.onDialogClosed === 'function') {
+            this.callbacks.onDialogClosed();
         }
     }
 
@@ -899,19 +896,4 @@ class UserScriptConfig {
     isReady() {
         return this.isInitialized;
     }
-}
-
-// Create multiple instances for different settings dialogs
-const settingsDialogInstances = new Map();
-
-/**
- * Gets or creates a settings dialog instance for a specific configId
- * @param {string} configId - Unique identifier for the settings instance
- * @returns {UserScriptConfig} The settings dialog instance
- */
-function getSettingsInstance(configId) {
-    if (!settingsDialogInstances.has(configId)) {
-        settingsDialogInstances.set(configId, new UserScriptConfig());
-    }
-    return settingsDialogInstances.get(configId);
 }
