@@ -253,3 +253,78 @@ select.setting-input {
     outline: 2px solid #007bff;
     outline-offset: 2px;
 }
+
+/* --- New Grouping Styles --- */
+.settings-group {
+    margin-bottom: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden; /* Ensures content respects border-radius */
+}
+
+.settings-group-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background-color: #f8f8f8;
+    border-bottom: 1px solid #e0e0e0;
+    cursor: pointer;
+    font-weight: 600;
+    color: #333333;
+    transition: background-color 0.2s ease;
+}
+
+.settings-group-header:hover {
+    background-color: #f0f0f0;
+}
+
+.settings-group-header h3 {
+    margin: 0;
+    font-size: 18px;
+    flex-grow: 1; /* Allows title to take available space */
+}
+
+.settings-group-toggle {
+    font-size: 1.2em;
+    transition: transform 0.2s ease;
+    width: 20px; /* Fixed width for consistent alignment */
+    text-align: center;
+}
+
+.settings-group-toggle.collapsed-icon {
+    transform: rotate(0deg); /* Right arrow */
+}
+
+.settings-group-toggle.expanded-icon {
+    transform: rotate(90deg); /* Down arrow */
+}
+
+.settings-group-content {
+    display: none; /* Hidden by default when collapsed */
+    padding: 0 20px; /* Padding for content inside the group */
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+}
+
+.settings-group-content.expanded {
+    display: block; /* Shown when expanded */
+    max-height: 1000px; /* Arbitrary large value to allow content to show */
+    padding: 15px 20px; /* Restore padding when expanded */
+    transition: max-height 0.5s ease-in, padding 0.3s ease-in;
+}
+
+/* Adjust table padding within groups if needed */
+.settings-group-content .settings-table {
+    margin-bottom: 0; /* Remove bottom margin if table is the only content */
+}
+
+.settings-group-content .setting-row:last-child {
+    border-bottom: none; /* No border for the last row in a group */
+}
+
+/* Remove top border for the first group to avoid double border with header */
+.settings-group:first-of-type {
+    border-top: none;
+}

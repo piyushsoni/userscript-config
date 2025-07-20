@@ -26,6 +26,10 @@
     // --- Sample JSON configuration ---
     const rbCommonsConfig = {
       headerText: "Better RBCommons Settings",
+      groups: [
+          { id: 'linkHandlers', name: 'Link Handlers', expanded: true },
+          { id: 'others', name: 'Others', expanded: false }
+      ],
       settings: [
         {
           id: 'enableShowingExtraLinks',
@@ -51,7 +55,8 @@
           labelText: 'Newton repository Path',
           placeholder: '/Users/<username>/repos/newton',
           defaultValue: '',
-          enabledIf: { otherElementId: 'enableQuickFileOpenLinks', value: true }
+          enabledIf: { otherElementId: 'enableQuickFileOpenLinks', value: true },
+          groupId: 'linkHandlers'
         },
         {
           id: 'defaultHandlerApp',
@@ -64,7 +69,8 @@
             { value: 'webstorm', text: 'Webstorm' },
             { value: 'pycharm', text: 'PyCharm' }
           ],
-          enabledIf: { otherElementId: 'enableQuickFileOpenLinks', value: true }
+          enabledIf: { otherElementId: 'enableQuickFileOpenLinks', value: true },
+          groupId: 'linkHandlers'
         },
         {
           id: 'vscodeExtensions',
@@ -72,7 +78,8 @@
           labelText: 'Extensions opened by VSCode',
           placeholder: '.ts, .js, .html, .vue, ...',
           defaultValue: '.ts, .js, .glsl, java, .cpp, .h',
-          enabledIf: { otherElementId: 'enableQuickFileOpenLinks', value: true }
+          enabledIf: { otherElementId: 'enableQuickFileOpenLinks', value: true },
+          groupId: 'linkHandlers'
         },
         {
           id: 'ideaExtensions',
@@ -80,7 +87,8 @@
           labelText: 'Extensions opened by IntelliJ IDEA',
           placeholder: '.java, ...',
           defaultValue: '',
-          enabledIf: { otherElementId: 'enableQuickFileOpenLinks', value: true }
+          enabledIf: { otherElementId: 'enableQuickFileOpenLinks', value: true },
+          groupId: 'linkHandlers'
         },
         {
           id: 'webstormExtensions',
@@ -88,7 +96,8 @@
           labelText: 'Extensions opened by Webstorm',
           placeholder: '.ts, .js, ...',
           defaultValue: '',
-          enabledIf: { otherElementId: 'enableQuickFileOpenLinks', value: true }
+          enabledIf: { otherElementId: 'enableQuickFileOpenLinks', value: true },
+          groupId: 'linkHandlers'
         },
         {
           id: 'pycharmExtensions',
@@ -96,7 +105,8 @@
           labelText: 'Extensions opened by Pycharm',
           placeholder: '.py, ...',
           defaultValue: '',
-          enabledIf: { otherElementId: 'enableQuickFileOpenLinks', value: true }
+          enabledIf: { otherElementId: 'enableQuickFileOpenLinks', value: true },
+          groupId: 'linkHandlers'
         }
       ],
       saveButtonText: "Save",
