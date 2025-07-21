@@ -19,7 +19,7 @@ class UserScriptConfig {
 
         // Define SVG icons to remove external dependency
         this.collapsedIconSVG = `
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+            <svg xmlns="http://www.w3.org/2000/svg" class="usc-icon-downward-svg" viewBox="0 0 20 20">
             <g>
                 <polygon points="12 17.586 4.707 10.293 3.293 11.707 12 20.414 20.707 11.707 19.293 10.293 12 17.586"/>
                 <polygon points="20.707 5.707 19.293 4.293 12 11.586 4.707 4.293 3.293 5.707 12 14.414 20.707 5.707"/>
@@ -27,7 +27,7 @@ class UserScriptConfig {
             </svg>
         `;
         this.expandedIconSVG = `
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+            <svg xmlns="http://www.w3.org/2000/svg" class="usc-icon-upward-svg" viewBox="0 0 20 20">
             <g>
                 <polygon points="12 6.414 19.293 13.707 20.707 12.293 12 3.586 3.293 12.293 4.707 13.707 12 6.414"/>
                 <polygon points="3.293 18.293 4.707 19.707 12 12.414 19.293 19.707 20.707 18.293 12 9.586 3.293 18.293"/>
