@@ -323,9 +323,9 @@ class UserScriptConfig {
     }
 
     setDialogGroupState(groupId, isExpanded) {
-        const groupContent = this.currentDialog.querySelector(`.settings-group[data-group-id="${groupId}"] .settings-group-content`);
-        const iconDownward = this.currentDialog.querySelector(`.settings-group[data-group-id="${groupId}"] .settings-group-header .settings-group-toggle .icon-downward`);
-        const iconUpward = this.currentDialog.querySelector(`.settings-group[data-group-id="${groupId}"] .settings-group-header .settings-group-toggle .icon-upward`);
+        const groupContent = this.currentDialog.querySelector(`.usc-settings-group[data-group-id="${groupId}"] .usc-settings-group-content`);
+        const iconDownward = this.currentDialog.querySelector(`.usc-settings-group[data-group-id="${groupId}"] .usc-settings-group-header .usc-settings-group-toggle .icon-downward`);
+        const iconUpward = this.currentDialog.querySelector(`.usc-settings-group[data-group-id="${groupId}"] .usc-settings-group-header .usc-settings-group-toggle .icon-upward`);
         if (groupContent && iconDownward && iconUpward) {
             if (isExpanded) {
                 groupContent.classList.add('expanded');
@@ -345,16 +345,16 @@ class UserScriptConfig {
     createDialogStructure(config) {
         // Create overlay
         const overlay = document.createElement('div');
-        overlay.className = 'settings-dialog-overlay';
+        overlay.className = 'usc-usc-settings-dialog-overlay';
 
         // Create main dialog container
         const dialog = document.createElement('div');
-        dialog.className = config.dialogCSSClass || 'settings-dialog';
+        dialog.className = config.dialogCSSClass || 'usc-settings-dialog';
 
         // Create header if specified
         if (config.headerText) {
             const header = document.createElement('h2');
-            header.className = config.headerCSSClass || 'dialog-header';
+            header.className = config.headerCSSClass || 'usc-dialog-header';
             header.textContent = config.headerText;
             dialog.appendChild(header);
         }
@@ -388,7 +388,7 @@ class UserScriptConfig {
             if (item.type === 'setting') {
                 // Render ungrouped setting directly
                 const table = document.createElement('table');
-                table.className = 'settings-table';
+                table.className = 'usc-settings-table';
                 const row = this.createSettingRow(item.setting);
                 table.appendChild(row);
                 dialog.appendChild(table);
@@ -402,7 +402,7 @@ class UserScriptConfig {
                 } else {
                     // If group config is missing, just render settings without a group header
                     const table = document.createElement('table');
-                    table.className = 'settings-table';
+                    table.className = 'usc-settings-table';
                     groupedSettings.get(groupId).forEach(setting => {
                         const row = this.createSettingRow(setting);
                         table.appendChild(row);
@@ -415,7 +415,7 @@ class UserScriptConfig {
 
         // Create footer
         const footer = document.createElement('div');
-        footer.className = config.footerCSSClass || 'dialog-footer';
+        footer.className = config.footerCSSClass || 'usc-dialog-footer';
 
         // Add footer text if specified
         if (config.footerText) {
@@ -426,12 +426,12 @@ class UserScriptConfig {
 
         // Create buttons
         const saveButton = document.createElement('button');
-        saveButton.className = config.saveButtonCSSClass || 'usercript-config-save-button';
+        saveButton.className = config.saveButtonCSSClass || 'usc-save-button';
         saveButton.textContent = config.saveButtonText || 'Save';
         saveButton.addEventListener('click', () => this.handleSave());
 
         const cancelButton = document.createElement('button');
-        cancelButton.className = config.cancelButtonCSSClass || 'userscript-config-cancel-button';
+        cancelButton.className = config.cancelButtonCSSClass || 'usc-cancel-button';
         cancelButton.textContent = config.cancelButtonText || 'Cancel';
         cancelButton.addEventListener('click', () => this.handleCancel());
 
@@ -452,11 +452,11 @@ class UserScriptConfig {
      */
     createGroupSection(groupConfig, settingsInGroup) {
         const groupDiv = document.createElement('div');
-        groupDiv.className = 'settings-group';
+        groupDiv.className = 'usc-settings-group';
         groupDiv.setAttribute('data-group-id', groupConfig.id);
 
         const headerDiv = document.createElement('div');
-        headerDiv.className = 'settings-group-header';
+        headerDiv.className = 'usc-settings-group-header';
         headerDiv.addEventListener('click', () => this.toggleGroup(groupConfig.id));
 
         const title = document.createElement('h3');
@@ -464,7 +464,7 @@ class UserScriptConfig {
         headerDiv.appendChild(title);
 
         const toggleIconSpan = document.createElement('span');
-        toggleIconSpan.className = 'settings-group-toggle';
+        toggleIconSpan.className = 'usc-settings-group-toggle';
 
         // Create a div just to fetch a rendered SVG
         const collapsedIconDiv = document.createElement('div');
@@ -484,10 +484,10 @@ class UserScriptConfig {
         groupDiv.appendChild(headerDiv);
 
         const contentDiv = document.createElement('div');
-        contentDiv.className = 'settings-group-content';
+        contentDiv.className = 'usc-settings-group-content';
 
         const table = document.createElement('table');
-        table.className = 'settings-table';
+        table.className = 'usc-settings-table';
 
         settingsInGroup.forEach(setting => {
             const row = this.createSettingRow(setting);
@@ -505,7 +505,7 @@ class UserScriptConfig {
      * @param {string} groupId - The ID of the group to toggle.
      */
     toggleGroup(groupId) {
-        const groupContent = this.currentDialog.querySelector(`.settings-group[data-group-id="${groupId}"] .settings-group-content`);
+        const groupContent = this.currentDialog.querySelector(`.usc-settings-group[data-group-id="${groupId}"] .usc-settings-group-content`);
         const isExpanded = groupContent.classList.contains('expanded');
         const newExpandedState = !isExpanded;
         this.groupStates.set(groupId, newExpandedState);
@@ -527,14 +527,14 @@ class UserScriptConfig {
      */
     createSettingRow(setting) {
         const row = document.createElement('tr');
-        row.className = 'setting-row';
+        row.className = 'usc-setting-row';
         if (setting.tooltip) {
             row.title = setting.tooltip;
         }
 
         // Create label cell
         const labelCell = document.createElement('td');
-        labelCell.className = setting.labelCSSClass || 'setting-label';
+        labelCell.className = setting.labelCSSClass || 'usc-setting-label';
         const label = document.createElement('label');
         label.textContent = setting.labelText;
         label.setAttribute('for', setting.id);
@@ -542,7 +542,7 @@ class UserScriptConfig {
 
         // Create input cell
         const inputCell = document.createElement('td');
-        inputCell.className = 'setting-input-cell';
+        inputCell.className = 'usc-setting-input-cell';
 
         // Create input element based on type
         const inputElement = this.createInputElement(setting);
@@ -553,7 +553,7 @@ class UserScriptConfig {
         // Add error message container for validation
         if (setting.validationRegex) {
             const errorDiv = document.createElement('div');
-            errorDiv.className = 'validation-error';
+            errorDiv.className = 'usc-validation-error';
             errorDiv.id = `${setting.id}-error`;
             errorDiv.style.display = 'none';
             errorDiv.textContent = setting.errorMessage || 'Invalid input';
@@ -571,7 +571,7 @@ class UserScriptConfig {
      */
     createInputElement(setting) {
         const type = setting.type || 'textbox';
-        const inputClass = setting.inputCSSClass || 'setting-input';
+        const inputClass = setting.inputCSSClass || 'usc-setting-input';
 
         switch (type) {
             case 'textbox':
@@ -600,12 +600,12 @@ class UserScriptConfig {
                 return checkboxInput;
             case 'radio':
                 const radioContainer = document.createElement('div');
-                radioContainer.className = 'radio-group';
+                radioContainer.className = 'usc-radio-group';
 
                 if (setting.options && Array.isArray(setting.options)) {
                     setting.options.forEach(option => {
                         const radioWrapper = document.createElement('div');
-                        radioWrapper.className = 'radio-option';
+                        radioWrapper.className = 'usc-radio-option';
 
                         const radioInput = document.createElement('input');
                         radioInput.type = 'radio';
@@ -781,11 +781,11 @@ class UserScriptConfig {
         const element = document.getElementById(id);
         if (element) return element;
 
-        // For radio groups, find the first radio button's parent (the radio-group div)
+        // For radio groups, find the first radio button's parent (the usc-radio-group div)
         const radioInputs = document.querySelectorAll(`input[id^="${id}-"]`);
         if (radioInputs.length > 0) {
             // Return the container of the radio group
-            return radioInputs[0].closest('.radio-group');
+            return radioInputs[0].closest('.usc-radio-group');
         }
         return null;
     }
@@ -833,9 +833,9 @@ class UserScriptConfig {
 
         if (inputElement) {
             if (isValid) {
-                inputElement.classList.remove('invalid-input');
+                inputElement.classList.remove('usc-invalid-input');
             } else {
-                inputElement.classList.add('invalid-input');
+                inputElement.classList.add('usc-invalid-input');
             }
         }
 
@@ -851,7 +851,7 @@ class UserScriptConfig {
      * Updates the save button enabled/disabled state
      */
     updateSaveButtonState() {
-        const saveButton = this.currentDialog?.querySelector('.usercript-config-save-button');
+        const saveButton = this.currentDialog?.querySelector('.usc-save-button');
         if (!saveButton) return;
 
         const allValid = Array.from(this.validationState.values()).every(valid => valid);

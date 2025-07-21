@@ -1,7 +1,7 @@
 /* Settings Dialog Library - Default CSS Styles */
 
 /* Modal overlay - full screen semi-transparent background */
-.settings-dialog-overlay {
+.usc-usc-settings-dialog-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -17,7 +17,7 @@
 }
 
 /* Main dialog container */
-.settings-dialog {
+.usc-settings-dialog {
     background-color: #ffffff;
     border-radius: 10px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
@@ -32,7 +32,7 @@
 }
 
 /* Dialog header */
-.dialog-header {
+.usc-dialog-header {
     margin: 0 0 25px 0;
     padding: 0 0 15px 0;
     border-bottom: 1px solid #e0e0e0;
@@ -43,23 +43,23 @@
 }
 
 /* Settings table */
-.settings-table {
+.usc-settings-table {
     width: 100%;
     border-collapse: collapse;
     /* margin-bottom: 10px; */
 }
 
 /* Individual setting row */
-.setting-row {
+.usc-setting-row {
     border-bottom: 1px solid #f0f0f0;
 }
 
-.setting-row:last-child {
+.usc-setting-row:last-child {
     border-bottom: none;
 }
 
 /* Label cell */
-.setting-label {
+.usc-setting-label {
     padding: 10px 10px 10px 0;
     vertical-align: middle;
     width: 45%;
@@ -69,21 +69,21 @@
     font-size: 12px;
 }
 
-.setting-label label {
+.usc-setting-label label {
     display: block;
     margin: 0;
     cursor: pointer;
 }
 
 /* Input cell */
-.setting-input-cell {
+.usc-setting-input-cell {
     padding: 5px 0;
     vertical-align: middle;
     width: 55%;
 }
 
 /* General input styling */
-.setting-input {
+.usc-setting-input {
     width: 100%;
     max-width: 300px;
     padding: 10px 12px;
@@ -91,19 +91,19 @@
     border-radius: 3px;
     font-size: 14px;
     font-family: inherit;
-    background-color: #ffffff;
-    color: #333333;
+    background-color: #ffffff !important;
+    color: #333333 !important;
     box-sizing: border-box;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.setting-input:focus {
+.usc-setting-input:focus {
     outline: none;
     border-color: #007bff;
     box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
 }
 
-.setting-input:disabled {
+.usc-setting-input:disabled {
     background-color: #f8f9fa;
     border-color: #e9ecef;
     color: #6c757d;
@@ -111,39 +111,39 @@
 }
 
 /* Checkbox specific styling */
-.setting-input[type="checkbox"] {
+.usc-setting-input[type="checkbox"] {
     width: auto;
     margin: 0;
     transform: scale(1.2);
 }
 
 /* Radio button group styling */
-.radio-group {
+.usc-radio-group {
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
 
-.radio-option {
+.usc-radio-option {
     display: flex;
     align-items: center;
     gap: 8px;
 }
 
-.radio-option input[type="radio"] {
+.usc-radio-option input[type="radio"] {
     width: auto;
     margin: 0;
     transform: scale(1.1);
 }
 
-.radio-option label {
+.usc-radio-option label {
     margin: 0;
     font-weight: normal;
     cursor: pointer;
 }
 
 /* Select dropdown styling */
-select.setting-input {
+select.usc-setting-input {
     background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3E%3Cpath fill='%23666' d='M2 0L0 2h4zm0 5L0 3h4z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 10px center;
@@ -155,13 +155,13 @@ select.setting-input {
 }
 
 /* Invalid input styling */
-.invalid-input {
+.usc-invalid-input {
     border-color: #dc3545 !important;
     box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.25) !important;
 }
 
 /* Validation error message */
-.validation-error {
+.usc-validation-error {
     color: #dc3545;
     font-size: 12px;
     margin-top: 5px;
@@ -170,7 +170,7 @@ select.setting-input {
 }
 
 /* Dialog footer */
-.dialog-footer {
+.usc-dialog-footer {
     display: flex;
     justify-content: flex-end;
     align-items: center;
@@ -180,15 +180,15 @@ select.setting-input {
     margin-top: 20px;
 }
 
-.dialog-footer span {
+.usc-dialog-footer span {
     margin-right: auto;
     color: #666666;
     font-size: 14px;
 }
 
 /* Button styling */
-.usercript-config-save-button,
-.userscript-config-cancel-button {
+.usc-save-button,
+.usc-cancel-button {
     padding: 10px 20px;
     border: none;
     border-radius: 3px;
@@ -199,71 +199,69 @@ select.setting-input {
     min-width: 80px;
 }
 
-.usercript-config-save-button {
+.usc-save-button {
     background-color: #007bff;
     color: #ffffff;
 }
 
-.usercript-config-save-button:hover:not(:disabled) {
+.usc-save-button:hover:not(:disabled) {
     transform: translateY(-1px);
     border-color: #007bff;
 }
 
-.usercript-config-save-button:disabled {
+.usc-save-button:disabled {
     background-color: #6c757d;
     cursor: not-allowed;
     transform: none;
 }
 
-.userscript-config-cancel-button {
+.usc-cancel-button {
     background-color: #6c757d;
     color: #ffffff;
 }
 
-.userscript-config-cancel-button:hover {
+.usc-cancel-button:hover {
     transform: translateY(-1px);
     border-color: #007bff;
 }
 
 /* Smooth scrolling for dialog content */
-.settings-dialog {
+.usc-settings-dialog {
     scroll-behavior: smooth;
 }
 
 /* Custom scrollbar for dialog */
-.settings-dialog::-webkit-scrollbar {
+.usc-settings-dialog::-webkit-scrollbar {
     width: 8px;
 }
 
-.settings-dialog::-webkit-scrollbar-track {
+.usc-settings-dialog::-webkit-scrollbar-track {
     background: #f1f1f1;
     border-radius: 4px;
 }
 
-.settings-dialog::-webkit-scrollbar-thumb {
+.usc-settings-dialog::-webkit-scrollbar-thumb {
     background: #c1c1c1;
     border-radius: 4px;
 }
 
-.settings-dialog::-webkit-scrollbar-thumb:hover {
+.usc-settings-dialog::-webkit-scrollbar-thumb:hover {
     background: #a8a8a8;
 }
 
-/* Focus management for accessibility */
-.settings-dialog *:focus {
+.usc-settings-dialog *:focus {
     outline: 2px solid #007bff;
     outline-offset: 2px;
 }
 
-/* --- New Grouping Styles --- */
-.settings-group {
+.usc-settings-group {
     margin-bottom: 20px;
     border: 1px solid #e0e0e0;
     border-radius: 8px;
-    overflow: hidden; /* Ensures content respects border-radius */
+    overflow: hidden;
 }
 
-.settings-group-header {
+.usc-settings-group-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -276,17 +274,17 @@ select.setting-input {
     transition: background-color 0.2s ease;
 }
 
-.settings-group-header:hover {
+.usc-settings-group-header:hover {
     background-color: #f0f0f0;
 }
 
-.settings-group-header h3 {
+.usc-settings-group-header h3 {
     margin: 0;
     font-size: 18px;
     flex-grow: 1;
 }
 
-.settings-group-toggle {
+.usc-settings-group-toggle {
     width: 20px; /* Fixed width for consistent alignment */
     height: 20px; /* Fixed height for consistent alignment */
     display: flex; /* To center the image */
@@ -294,14 +292,14 @@ select.setting-input {
     justify-content: center; /* To center the image */
 }
 
-.settings-group-toggle img {
+.usc-settings-group-toggle img {
     width: 100%; /* Make image fill the span */
     height: 100%; /* Make image fill the span */
     object-fit: contain; /* Ensure the image scales without distortion */
 }
 
 
-.settings-group-content {
+.usc-settings-group-content {
     display: none; /* Hidden by default when collapsed */
     padding: 0 20px; /* Padding for content inside the group */
     max-height: 0;
@@ -309,7 +307,7 @@ select.setting-input {
     transition: max-height 0.3s ease-out, padding 0.3s ease-out;
 }
 
-.settings-group-content.expanded {
+.usc-settings-group-content.expanded {
     display: block; /* Shown when expanded */
     max-height: 1000px; /* Arbitrary large value to allow content to show */
     padding: 15px 20px; /* Restore padding when expanded */
@@ -317,10 +315,10 @@ select.setting-input {
 }
 
 /* Adjust table padding within groups if needed */
-.settings-group-content .settings-table {
+.usc-settings-group-content .usc-settings-table {
     margin-bottom: 0; /* Remove bottom margin if table is the only content */
 }
 
-.settings-group-content .setting-row:last-child {
+.usc-settings-group-content .usc-setting-row:last-child {
     border-bottom: none; /* No border for the last row in a group */
 }

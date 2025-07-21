@@ -220,13 +220,13 @@ console.log('Current settings:', allCurrentSettings);
 | `configId`          | `string` | Yes      | A unique identifier for your script's settings. Used for namespacing LocalStorage keys (e.g., `myScript.settingId`). |                          |
 | `headerText`        | `string` | No       | Text to display in the dialog's header.                                  |                          |
 | `footerText`        | `string` | No       | Text to display in the dialog's footer.                                  |                          |
-| `dialogCSSClass`    | `string` | No       | Custom CSS class for the main dialog container.                          | `settings-dialog`        |
-| `headerCSSClass`    | `string` | No       | Custom CSS class for the dialog header.                                  | `dialog-header`          |
-| `footerCSSClass`    | `string` | No       | Custom CSS class for the dialog footer.                                  | `dialog-footer`          |
+| `dialogCSSClass`    | `string` | No       | Custom CSS class for the main dialog container.                          | `usc-settings-dialog`        |
+| `headerCSSClass`    | `string` | No       | Custom CSS class for the dialog header.                                  | `usc-dialog-header`          |
+| `footerCSSClass`    | `string` | No       | Custom CSS class for the dialog footer.                                  | `usc-dialog-footer`          |
 | `saveButtonText`    | `string` | No       | Text for the save button.                                                | `Save`                   |
-| `saveButtonCSSClass`| `string` | No       | Custom CSS class for the save button.                                    | `usercript-config-save-button`            |
+| `saveButtonCSSClass`| `string` | No       | Custom CSS class for the save button.                                    | `usc-save-button`            |
 | `cancelButtonText`  | `string` | No       | Text for the cancel button.                                              | `Cancel`                 |
-| `cancelButtonCSSClass`| `string` | No       | Custom CSS class for the cancel button.                                  | `userscript-config-cancel-button`          |
+| `cancelButtonCSSClass`| `string` | No       | Custom CSS class for the cancel button.                                  | `usc-cancel-button`          |
 | `settings`          | `Array`  | Yes      | An array of setting objects. See [`settings` Array](https://www.google.com/search?q=%23settings-array).      |                          |
 | `groups`            | `Array`  | No       | An array of group objects for organizing settings. See [`groups` Array](https://www.google.com/search?q=%23groups-array). |                          |
 
@@ -241,8 +241,8 @@ Each object in the `settings` array defines a single configurable option.
 | `type`             | `string`            | Yes      | The type of input element. Can be `textbox`, `password`, `checkbox`, `radio`, or `dropdown`.                                                                                                                                                                                    | `textbox`     |
 | `defaultValue`     | `any`               | Yes      | The initial value for the setting if no value is found in LocalStorage. Must match the expected data type for the `type` (e.g., `boolean` for `checkbox`, `string` for others).                                                                                                   |               |
 | `tooltip`          | `string`            | No       | Text to display as a tooltip when hovering over the setting row.                                                                                                                                                                                                                  |               |
-| `inputCSSClass`    | `string`            | No       | Custom CSS class for the input element itself.                                                                                                                                                                                                                                    | `setting-input` |
-| `labelCSSClass`    | `string`            | No       | Custom CSS class for the label cell.                                                                                                                                                                                                                                              | `setting-label` |
+| `inputCSSClass`    | `string`            | No       | Custom CSS class for the input element itself.                                                                                                                                                                                                                                    | `usc-setting-input` |
+| `labelCSSClass`    | `string`            | No       | Custom CSS class for the label cell.                                                                                                                                                                                                                                              | `usc-setting-label` |
 | `placeholder`      | `string`            | No       | Placeholder text for `textbox` and `password` types.                                                                                                                                                                                                                              |               |
 | `validationRegex`  | `string`            | No       | A regular expression string used to validate `textbox` and `password` inputs. The input is valid if it matches the regex.                                                                                                                                                         |               |
 | `errorMessage`     | `string`            | No       | The error message displayed below the input if `validationRegex` fails.                                                                                                                                                                                                           | `Invalid input` |
@@ -326,21 +326,21 @@ The `userscript-config-style.css` file provides a comprehensive set of default s
 
 Key CSS classes:
 
-  * `.settings-dialog-overlay`: Full-screen background overlay.
-  * `.settings-dialog`: Main dialog container.
-  * `.dialog-header`: Header text.
-  * `.settings-table`: Table containing setting rows.
-  * `.setting-row`: Individual row for a setting.
-  * `.setting-label`: Cell containing the setting's label.
-  * `.setting-input-cell`: Cell containing the input element.
-  * `.setting-input`: General styling for all input types (textbox, password, checkbox, select).
-  * `.radio-group`, `.radio-option`: Specific styles for radio button containers.
-  * `.invalid-input`: Applied to an input field when validation fails.
-  * `.validation-error`: Container for validation error messages.
-  * `.dialog-footer`: Dialog footer.
-  * `.usercript-config-save-button`, `.userscript-config-cancel-button`: Styles for action buttons.
-  * `.settings-group`: Container for a collapsible group.
-  * `.settings-group-header`: Clickable header for a group.
-  * `.settings-group-toggle`: Span containing the toggle icon (up/down arrow).
-  * `.settings-group-content`: Collapsible content area of a group.
-  * `.settings-group-content.expanded`: Class added when the group content is expanded.
+  * `.usc-usc-settings-dialog-overlay`: Full-screen background overlay.
+  * `.usc-settings-dialog`: Main dialog container.
+  * `.usc-dialog-header`: Header text.
+  * `.usc-settings-table`: Table containing setting rows.
+  * `.usc-setting-row`: Individual row for a setting.
+  * `.usc-setting-label`: Cell containing the setting's label.
+  * `.usc-setting-input-cell`: Cell containing the input element.
+  * `.usc-setting-input`: General styling for all input types (textbox, password, checkbox, select).
+  * `.usc-radio-group`, `.usc-radio-option`: Specific styles for radio button containers.
+  * `.usc-invalid-input`: Applied to an input field when validation fails.
+  * `.usc-validation-error`: Container for validation error messages.
+  * `.usc-dialog-footer`: Dialog footer.
+  * `.usc-save-button`, `.usc-cancel-button`: Styles for action buttons.
+  * `.usc-settings-group`: Container for a collapsible group.
+  * `.usc-settings-group-header`: Clickable header for a group.
+  * `.usc-settings-group-toggle`: Span containing the toggle icon (up/down arrow).
+  * `.usc-settings-group-content`: Collapsible content area of a group.
+  * `.usc-settings-group-content.expanded`: Class added when the group content is expanded.
