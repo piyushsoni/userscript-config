@@ -1,4 +1,4 @@
-# Settings UI Dialog Library
+# UserScript Config : A Settings UI Dialog Library
 
 This library provides a flexible and easy-to-use way to generate a modal settings dialog from a JSON configuration. It handles dynamic UI creation, LocalStorage persistence, input validation, and conditional display logic for settings and groups.
 

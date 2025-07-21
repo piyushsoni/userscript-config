@@ -39,6 +39,7 @@ class UserScriptConfig {
     setupStorageFunctions() {
         if (typeof GM_setValue === 'function' && typeof GM_getValue === 'function') {
             console.debug('Using GM_setValue and GM_getValue for UserScriptConfig settings');
+            // Use TamperMonkey's official API if available.
             this.setValueIntoStorage = GM_setValue;
             this.getValueFromStorage = GM_getValue;
         } else {
@@ -163,7 +164,7 @@ class UserScriptConfig {
         this.values.forEach((value, id) => {
             try {
                 const storageKey = this.getStorageKey(id);
-                this.setValueIntoStorage(storageKey, value.toString());
+                this.setValueIntoStorage(storageKey, value);
             } catch (error) {
                 console.error(`Error writing to storage for ${id}:`, error);
             }
@@ -173,7 +174,7 @@ class UserScriptConfig {
         this.groupStates.forEach((state, id) => {
             try {
                 const storageKey = this.getStorageKey(`groupState.${id}`);
-                this.setValueIntoStorage(storageKey, state.toString());
+                this.setValueIntoStorage(storageKey, state);
             } catch (error) {
                 console.error(`Error writing group state to storage for ${id}:`, error);
             }
@@ -513,7 +514,7 @@ class UserScriptConfig {
         // Update storage immediately for group states
         try {
             const storageKey = this.getStorageKey(`groupState.${groupId}`);
-            this.setValueIntoStorage(storageKey, newExpandedState.toString());
+            this.setValueIntoStorage(storageKey, newExpandedState);
         } catch (error) {
             console.error(`Error writing group state to storage for ${groupId}:`, error);
         }

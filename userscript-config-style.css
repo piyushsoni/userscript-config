@@ -104,9 +104,9 @@
 }
 
 .usc-setting-input:disabled {
-    background-color: #f8f9fa;
+    background-color: #f8f9fa !important;
     border-color: #e9ecef;
-    color: #6c757d;
+    color: #6c757d !important;
     cursor: not-allowed;
 }
 
