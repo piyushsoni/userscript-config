@@ -1,7 +1,7 @@
 /* Settings Dialog Library - Default CSS Styles */
 
 /* Modal overlay - full screen semi-transparent background */
-.usc-usc-settings-dialog-overlay {
+.usc-settings-dialog-overlay {
     position: fixed;
     top: 0;
     left: 0;

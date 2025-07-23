@@ -2,6 +2,7 @@
  * Settings UI Dialog Library
  * Dynamically creates a modal settings dialog based on JSON configuration
  * with persistence storage and validation support.
+ * Author - Piyush Soni
  */
 
 class UserScriptConfig {
@@ -346,7 +347,7 @@ class UserScriptConfig {
     createDialogStructure(config) {
         // Create overlay
         const overlay = document.createElement('div');
-        overlay.className = 'usc-usc-settings-dialog-overlay';
+        overlay.className = 'usc-settings-dialog-overlay';
 
         // Create main dialog container
         const dialog = document.createElement('div');

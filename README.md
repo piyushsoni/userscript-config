@@ -1,11 +1,11 @@
 # UserScript Config : A Settings UI Dialog Library
 
-This library provides a flexible and easy-to-use way to generate a modal settings dialog from a JSON configuration. It handles dynamic UI creation, LocalStorage persistence, input validation, and conditional display logic for settings and groups.
+This library provides a flexible and easy-to-use way to generate a modal settings dialog from a JSON configuration. It handles dynamic UI creation, local storage persistence, input validation, and conditional display logic for settings and groups. It is well suited for use in general purpose browser userscripts (e.g. with userscript managers like Tampermonkey). When the Userscript manager's storage functions are available, it uses those instead of the `localStorage` ones.
 
 ## Features
 
   * **Dynamic Dialog Generation:** Create a complete settings dialog purely from a JSON configuration object.
-  * **LocalStorage Persistence:** Automatically saves and loads setting values to/from LocalStorage, namespaced by a unique `configId`.
+  * **Local Storage Persistence:** Automatically saves and loads setting values to/from local storage, namespaced by a unique `configId`.
   * **Input Validation:** Supports regular expression-based validation for text and password inputs, providing real-time feedback.
   * **Conditional Logic:**
       * **`enabledIf`**: Enable or disable settings based on the value of another setting.
@@ -19,19 +19,18 @@ This library provides a flexible and easy-to-use way to generate a modal setting
 
 ## Table of Contents
 
-  * [Installation](https://www.google.com/search?q=%23installation)
-  * [Usage](https://www.google.com/search?q=%23usage)
-      * [1. Include the Library](https://www.google.com/search?q=%231-include-the-library)
-      * [2. Define Your Configuration](https://www.google.com/search?q=%232-define-your-configuration)
-      * [3. Initialize and Use](https://www.google.com/search?q=%233-initialize-and-use)
-  * [Configuration Reference](https://www.google.com/search?q=%23configuration-reference)
-      * [Main `config` Object](https://www.google.com/search?q=%23main-config-object)
-      * [`settings` Array](https://www.google.com/search?q=%23settings-array)
-      * [`groups` Array](https://www.google.com/search?q=%23groups-array)
-  * [Callbacks](https://www.google.com/search?q=%23callbacks)
-  * [Public Methods](https://www.google.com/search?q=%23public-methods)
-  * [Styling](https://www.google.com/search?q=%23styling)
-  * [Example](https://www.google.com/search?q=%23example)
+  * [Installation](#installation)
+  * [Usage](#usage)
+      * [1. Include the Library](#1-include-the-library)
+      * [2. Define Your Configuration](#2-define-your-configuration)
+      * [3. Initialize and Use](#3-initialize-and-use)
+  * [Configuration Reference](#configuration-reference)
+      * [Main `config` Object](#main-config-object)
+      * [`settings` Array](#settings-array)
+      * [`groups` Array](#groups-array)
+  * [Callbacks](#callbacks)
+  * [Public Methods](#public-methods)
+  * [Styling](#styling)
 
 ## Installation
 
@@ -55,8 +54,8 @@ Simply include these files in your project. For a UserScript, you might use `@re
 // @grant        GM_setValue
 // @grant        GM_getValue
 // @grant        GM_addStyle
-// @resource     DIALOG_CSS https://valid/URL/to/userscript-config-style.css
-// @require      https://valid/URL/to/userscript-config.js
+// @resource     DIALOG_CSS https://raw.githubusercontent.com/onshape/onshape-dev-tools/refs/heads/master/userscript-config/userscript-config-style.css?token=GHSAT0AAAAAAC4XLLYKNUYCI6WMYZ5JX4B22EARLUQ
+// @require      https://raw.githubusercontent.com/onshape/onshape-dev-tools/refs/heads/master/userscript-config/userscript-config.js?token=GHSAT0AAAAAAC4XLLYKXJSFZQZ2SO72IDBC2EARLXA
 // ==/UserScript==
 
 // Get CSS from resource and apply it
@@ -64,8 +63,6 @@ GM_addStyle(GM_getResourceText('DIALOG_CSS'));
 
 // Your script logic here, then use UserScriptConfig
 ```
-
-(Replace with the correct full URLs of both `userscript-config-style.css` and `userscript-config.js`)
 
 ## Usage
 
@@ -79,12 +76,12 @@ Create a JavaScript object that defines your dialog's structure and settings.
 
 ```javascript
 const myConfig = {
-    configId: 'myAwesomeScriptSettings', // Unique ID for localStorage
+    configId: 'myAwesomeScriptSettings', // Unique ID for local storage
     headerText: 'My Script Settings',
     footerText: 'Version 1.0.0',
     dialogCSSClass: 'my-custom-dialog', // Optional: apply custom class to dialog container
-    saveButtonText: 'Apply',
-    cancelButtonText: 'Close',
+    saveButtonText: 'Save',
+    cancelButtonText: 'Cancel',
     settings: [
         {
             id: 'enableFeatureA',
@@ -180,7 +177,7 @@ const myCallbacks = {
         // Perform immediate action if needed
     },
     onSettingsLoaded: () => {
-        console.log('Settings loaded from LocalStorage.');
+        console.log('Settings loaded from local storage.');
         // Initial setup based on loaded settings
         const currentUsername = settingsManager.getFieldValue('username');
         console.log('Loaded Username:', currentUsername);
@@ -194,7 +191,7 @@ const myCallbacks = {
 // Create an instance of the settings manager
 const settingsManager = new UserScriptConfig(myConfig, myCallbacks);
 
-// Initialize the manager (reads from localStorage and sets defaults)
+// Initialize the manager (reads from local storage and sets defaults)
 settingsManager.init();
 
 // Later, when you want to open the dialog (e.g., on a button click)
@@ -217,7 +214,7 @@ console.log('Current settings:', allCurrentSettings);
 
 | Property            | Type     | Required | Description                                                              | Default                  |
 | :------------------ | :------- | :------- | :----------------------------------------------------------------------- | :----------------------- |
-| `configId`          | `string` | Yes      | A unique identifier for your script's settings. Used for namespacing LocalStorage keys (e.g., `myScript.settingId`). |                          |
+| `configId`          | `string` | Yes      | A unique identifier for your script's settings. Used for namespacing local storage keys (e.g., `myScript.settingId`). |                          |
 | `headerText`        | `string` | No       | Text to display in the dialog's header.                                  |                          |
 | `footerText`        | `string` | No       | Text to display in the dialog's footer.                                  |                          |
 | `dialogCSSClass`    | `string` | No       | Custom CSS class for the main dialog container.                          | `usc-settings-dialog`        |
@@ -236,10 +233,10 @@ Each object in the `settings` array defines a single configurable option.
 
 | Property           | Type                | Required | Description                                                                                                                                                                                                                                                                       | Default       |
 | :----------------- | :------------------ | :------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------ |
-| `id`               | `string`            | Yes      | A unique identifier for the setting. Used for LocalStorage and accessing its value.                                                                                                                                                                                               |               |
+| `id`               | `string`            | Yes      | A unique identifier for the setting. Used for local storage as well as accessing its value.                                                                                                                                                                                               |               |
 | `labelText`        | `string`            | Yes      | The text displayed next to the input field in the dialog.                                                                                                                                                                                                                         |               |
 | `type`             | `string`            | Yes      | The type of input element. Can be `textbox`, `password`, `checkbox`, `radio`, or `dropdown`.                                                                                                                                                                                    | `textbox`     |
-| `defaultValue`     | `any`               | Yes      | The initial value for the setting if no value is found in LocalStorage. Must match the expected data type for the `type` (e.g., `boolean` for `checkbox`, `string` for others).                                                                                                   |               |
+| `defaultValue`     | `any`               | Yes      | The initial value for the setting if no value is found in the local storage. Must match the expected data type for the `type` (e.g., `boolean` for `checkbox`, `string` for others).                                                                                                   |               |
 | `tooltip`          | `string`            | No       | Text to display as a tooltip when hovering over the setting row.                                                                                                                                                                                                                  |               |
 | `inputCSSClass`    | `string`            | No       | Custom CSS class for the input element itself.                                                                                                                                                                                                                                    | `usc-setting-input` |
 | `labelCSSClass`    | `string`            | No       | Custom CSS class for the label cell.                                                                                                                                                                                                                                              | `usc-setting-label` |
@@ -259,7 +256,7 @@ Each object in the `groups` array defines a collapsible section for settings.
 | :------------ | :------- | :------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------- |
 | `id`          | `string` | Yes      | A unique identifier for the group. This `id` is referenced by `settings[].groupId`.                                                                                                                                                    |                      |
 | `name`        | `string` | Yes      | The title displayed for the group header.                                                                                                                                                                                                |                      |
-| `expanded`    | `boolean`| No       | The default expansion state of the group (`true` for expanded, `false` for collapsed) when the dialog opens, if no state is found in LocalStorage.                                                                                     | `true`               |
+| `expanded`    | `boolean`| No       | The default expansion state of the group (`true` for expanded, `false` for collapsed) when the dialog opens, if no state is found in the local storage.                                                                                     | `true`               |
 | `collapsedIf` | `Object` | No       | An object defining conditional collapsing: \<br/\>`{ otherElementId: string, value: any }`. \<br/\> The group will collapse if the setting with `otherElementId` has the specified `value`. It will expand otherwise. |                      |
 
 ## Callbacks
@@ -268,9 +265,9 @@ The `UserScriptConfig` constructor accepts an optional `callbacks` object with t
 
   * `onDialogOpened()`: Called immediately after the settings dialog is created and appended to the DOM.
   * `onDialogClosed()`: Called immediately after the settings dialog is removed from the DOM.
-  * `onSettingsSaved()`: Called after the "Save" button is clicked and settings have been written to LocalStorage.
+  * `onSettingsSaved()`: Called after the "Save" button is clicked and settings have been written to the local storage (which could be `localStorage`, or the persistent db provided by the Userscript manager if used with one).
   * `onSettingChanged(id, newValue)`: Called whenever an input field's value changes (due to user interaction). `id` is the setting's ID, and `newValue` is its current value.
-  * `onSettingsLoaded()`: Called after `init()` has read initial settings and group states from LocalStorage and populated the internal `values` and `groupStates` maps.
+  * `onSettingsLoaded()`: Called after `init()` has read initial settings and group states from the local storage and populated the internal `values` and `groupStates` maps.
 
 <!-- end list -->
 
@@ -283,7 +280,7 @@ const myCallbacks = {
         console.log('Dialog has been closed.');
     },
     onSettingsSaved: () => {
-        console.log('Settings successfully saved to LocalStorage!');
+        console.log('Settings successfully saved to local storage!');
         // Re-apply script logic based on new settings here
         // For example: myScript.applyNewSettings(settingsManager.getAllFieldValues());
     },
@@ -308,15 +305,15 @@ const settingsManager = new UserScriptConfig(myConfig, myCallbacks);
 
 ## Public Methods
 
-  * `init()`: Initializes the settings manager. Reads values from LocalStorage and sets up default group states. **Must be called before `openSettingsDialog()` or accessing values.**
+  * `init()`: Initializes the settings manager. Reads values from the local storage and sets up default group states. **Must be called before `openSettingsDialog()` or accessing values.**
   * `openSettingsDialog()`: Creates, populates, and displays the modal settings dialog.
   * `closeDialog()`: Closes and removes the settings dialog from the DOM.
-  * `setFieldValue(id, value)`: Updates a specific setting's value in the in-memory cache. Does not write to LocalStorage immediately.
+  * `setFieldValue(id, value)`: Updates a specific setting's value in the in-memory cache. Does not write to local storage immediately.
   * `getFieldValue(id)`: Retrieves the current value of a specific setting from the in-memory cache.
   * `getAllFieldValues()`: Returns an object containing all setting IDs and their current values.
-  * `readFromStore()`: Reads all settings and group states from LocalStorage and updates the in-memory cache.
-  * `writeToStorage()`: Writes all current settings and group states from the in-memory cache to LocalStorage.
-  * `resetToDefaults()`: Resets all settings (and group states) in the in-memory cache to their `defaultValue` as defined in the `config`. Does not write to LocalStorage immediately.
+  * `readFromStore()`: Reads all settings and group states from local storage and updates the in-memory cache.
+  * `writeToStorage()`: Writes all current settings and group states from the in-memory cache to local storage.
+  * `resetToDefaults()`: Resets all settings (and group states) in the in-memory cache to their `defaultValue` as defined in the `config`. Does not write to local storage immediately.
   * `isDialogOpen()`: Returns `true` if the settings dialog is currently open, `false` otherwise.
   * `isReady()`: Returns `true` if the settings manager has been initialized (`init()` called), `false` otherwise.
 
@@ -326,7 +323,7 @@ The `userscript-config-style.css` file provides a comprehensive set of default s
 
 Key CSS classes:
 
-  * `.usc-usc-settings-dialog-overlay`: Full-screen background overlay.
+  * `.usc-settings-dialog-overlay`: Full-screen background overlay.
   * `.usc-settings-dialog`: Main dialog container.
   * `.usc-dialog-header`: Header text.
   * `.usc-settings-table`: Table containing setting rows.
